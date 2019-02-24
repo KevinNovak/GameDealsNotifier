@@ -1,8 +1,11 @@
 {
   "email": {
     "service": "gmail",
-    "sender": "{SENDER_EMAIL}",
-    "password": "{SENDER_PASSWORD}",
+    "sender": {
+      "name": "Game Deals Notifier",
+      "email": "{SENDER_EMAIL}",
+      "password": "{SENDER_PASSWORD}"
+    },
     "receivers": "{RECEIVER_EMAILS}",
     "subject": "New Game Deals"
   },
