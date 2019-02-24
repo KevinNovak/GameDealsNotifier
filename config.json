@@ -3,7 +3,7 @@
     "service": "gmail",
     "sender": "{SENDER_EMAIL}",
     "password": "{SENDER_PASSWORD}",
-    "receiver": "{RECEIVER_EMAIL}",
+    "receivers": "{RECEIVER_EMAILS}",
     "subject": "New Game Deals"
   },
   "api": {
