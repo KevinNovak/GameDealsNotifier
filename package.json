@@ -1,7 +1,7 @@
 {
   "name": "gamedealsnotifier",
   "version": "1.0.0",
-  "description": "Be notified about game sales.",
+  "description": "Be notified of quality PC game deals.",
   "main": "app.js",
   "scripts": {
     "start": "pm2 start process.json",
