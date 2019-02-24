@@ -40,10 +40,9 @@ function sendEmail(deals) {
   message += '<ul>';
 
   for (var deal of deals) {
-    var percentOff = Math.round(
-      ((deal.normalPrice - deal.salePrice) / deal.normalPrice) * 100
-    );
-    message += `<li>[${getStoreById(deal.storeID)}] ${deal.title} ($${
+    var percentOff = dealsService.getPercentOff(deal);
+    var store = getStoreById(deal.storeID);
+    message += `<li>[${store}] ${deal.title} ($${
       deal.salePrice
     } / ${percentOff}% off)</li>`;
   }

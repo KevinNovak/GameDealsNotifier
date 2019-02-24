@@ -15,11 +15,16 @@ function isGoodDeal(deal) {
   if (deal.steamRatingCount < config.deals.steamRating) {
     return false;
   }
-  var percentOff = (deal.normalPrice - deal.salePrice) / deal.normalPrice;
-  if (percentOff < config.deals.percentOff) {
+  if (getPercentOff(deal) < config.deals.percentOff) {
     return false;
   }
   return true;
+}
+
+function getPercentOff(deal) {
+  return Math.round(
+    ((deal.normalPrice - deal.salePrice) / deal.normalPrice) * 100
+  );
 }
 
 function updateLastCheck() {
@@ -28,5 +33,6 @@ function updateLastCheck() {
 
 module.exports = {
   filterDeals,
+  getPercentOff,
   updateLastCheck
 };
