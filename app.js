@@ -79,7 +79,7 @@ async function sendEmail(deals) {
 
   const mailOptions = {
     from: config.email.sender,
-    to: config.email.receiver,
+    to: config.email.receivers,
     subject: config.email.subject,
     html: message
   };
