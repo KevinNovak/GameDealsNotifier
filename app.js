@@ -7,6 +7,9 @@ const dealsParameters = `sortBy=Recent&onSale=1&steamRating=${
   config.deals.steamRating
 }`;
 
+const siteUrl = `${config.site.url}/${
+  config.site.routes.browse
+}?${dealsParameters}`;
 const dealsUrl = `${config.api.url}/${
   config.api.routes.deals
 }?${dealsParameters}`;
@@ -35,21 +38,28 @@ function processDealsResponse(response) {
 }
 
 function sendEmail(deals) {
-  var message = '<h2>New Game Deals</h2>';
+  var message = buildMessage(deals);
+  mailerService.sendEmail(message);
+}
+
+function buildMessage(deals) {
+  var message = `<h2><a href="${siteUrl}">New Game Deals</a></h2>`;
 
   message += '<ul>';
 
   for (var deal of deals) {
     var percentOff = dealsService.getPercentOff(deal);
     var store = getStoreById(deal.storeID);
-    message += `<li>[${store}] ${deal.title} ($${
+    var steamUrl = `https://store.steampowered.com/app/${deal.steamAppID}/`;
+
+    message += `<li><a href="${steamUrl}">[${store}] ${deal.title} ($${
       deal.salePrice
-    } / ${percentOff}% off)</li>`;
+    } / ${percentOff}% off)</a></li>`;
   }
 
   message += '</ul>';
 
-  mailerService.sendEmail(message);
+  return message;
 }
 
 function getStoreById(id) {
