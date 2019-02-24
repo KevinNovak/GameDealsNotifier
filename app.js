@@ -1,5 +1,6 @@
 const axios = require('axios');
-const mailer = require('./services/mailer');
+const dealsService = require('./services/deals-service');
+const mailerService = require('./services/mailer-service');
 const config = require('./config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1&steamRating=${
@@ -11,12 +12,7 @@ const dealsUrl = `${config.api.url}/${
 }?${dealsParameters}`;
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
-var lastCheck = timeSinceEpoch();
 var stores = [];
-
-function timeSinceEpoch() {
-  return Math.floor(new Date().getTime() / 1000);
-}
 
 async function checkForUpdates() {
   axios
@@ -31,29 +27,14 @@ async function checkForUpdates() {
 }
 
 function processDealsResponse(response) {
-  var deals = response.data.filter(isNewDeal).filter(isGoodDeal);
-  lastCheck = timeSinceEpoch();
+  var deals = dealsService.filterDeals(response.data);
+  dealsService.updateLastCheck();
   if (deals.length > 0) {
     sendEmail(deals);
   }
 }
 
-function isNewDeal(deal) {
-  return deal.lastChange > lastCheck;
-}
-
-function isGoodDeal(deal) {
-  if (deal.steamRatingCount < config.deals.steamRating) {
-    return false;
-  }
-  var percentOff = (deal.normalPrice - deal.salePrice) / deal.normalPrice;
-  if (percentOff < config.deals.percentOff) {
-    return false;
-  }
-  return true;
-}
-
-async function sendEmail(deals) {
+function sendEmail(deals) {
   var message = '<h2>New Game Deals</h2>';
 
   message += '<ul>';
@@ -69,7 +50,7 @@ async function sendEmail(deals) {
 
   message += '</ul>';
 
-  mailer.sendEmail(message);
+  mailerService.sendEmail(message);
 }
 
 function getStoreById(id) {
