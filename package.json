@@ -1,0 +1,28 @@
+{
+  "name": "gamedealsnotifier",
+  "version": "1.0.0",
+  "description": "Be notified about game sales.",
+  "main": "app.js",
+  "scripts": {
+    "start": "pm2 start process.json",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "deal",
+    "deals",
+    "game",
+    "notifier",
+    "notify",
+    "sale"
+  ],
+  "dependencies": {
+    "axios": "0.18.0",
+    "nodemailer": "5.1.1",
+    "pm2": "^3.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  },
+  "author": "Kevin Novak",
+  "license": "MIT"
+}

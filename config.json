@@ -1,0 +1,21 @@
+{
+  "email": {
+    "service": "gmail",
+    "sender": "{SENDER_EMAIL}",
+    "password": "{SENDER_PASSWORD}",
+    "receiver": "{RECEIVER_EMAIL}",
+    "subject": "New Game Deals"
+  },
+  "api": {
+    "url": "https://www.cheapshark.com/api/1.0",
+    "routes": {
+      "deals": "deals",
+      "stores": "stores"
+    }
+  },
+  "deals": {
+    "steamRating": 90,
+    "reviewsCount": 300,
+    "percentOff": 0.6
+  }
+}
