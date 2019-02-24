@@ -1,5 +1,5 @@
 const axios = require('axios');
-const nodemailer = require('nodemailer');
+const mailer = require('./services/mailer');
 const config = require('./config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1&steamRating=${
@@ -10,14 +10,6 @@ const dealsUrl = `${config.api.url}/${
   config.api.routes.deals
 }?${dealsParameters}`;
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
-
-const transporter = nodemailer.createTransport({
-  service: config.email.service,
-  auth: {
-    user: config.email.sender,
-    pass: config.email.password
-  }
-});
 
 var lastCheck = timeSinceEpoch();
 var stores = [];
@@ -77,20 +69,7 @@ async function sendEmail(deals) {
 
   message += '</ul>';
 
-  const mailOptions = {
-    from: config.email.sender,
-    to: config.email.receivers,
-    subject: config.email.subject,
-    html: message
-  };
-
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log(info);
-    }
-  });
+  mailer.sendEmail(message);
 }
 
 function getStoreById(id) {
