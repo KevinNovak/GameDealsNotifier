@@ -40,10 +40,10 @@ async function checkForUpdates() {
 
 function processDealsResponse(response) {
   var deals = response.data.filter(isNewDeal).filter(isGoodDeal);
+  lastCheck = timeSinceEpoch();
   if (deals.length > 0) {
     sendEmail(deals);
   }
-  lastCheck = timeSinceEpoch();
 }
 
 function isNewDeal(deal) {
