@@ -12,7 +12,10 @@ function isNewDeal(deal) {
 }
 
 function isGoodDeal(deal) {
-  if (deal.steamRatingCount < config.deals.steamRating) {
+  if (deal.steamRatingPercent < config.deals.steamRating) {
+    return false;
+  }
+  if (deal.steamRatingCount < config.deals.reviewsCount) {
     return false;
   }
   if (getPercentOff(deal) < config.deals.percentOff) {
