@@ -21,7 +21,7 @@ var stores = [];
 var job = schedule.scheduleJob(config.schedule, checkForUpdates);
 
 async function checkForUpdates() {
-  logger.log('Checking for updates...');
+  logger.log('Checking for new deals...');
   axios
     .get(storesUrl)
     .then(response => {
@@ -40,10 +40,10 @@ function processDealsResponse(response) {
   var deals = dealsService.filterDeals(response.data);
   dealsService.updateLastCheck();
   if (deals.length > 0) {
-    logger.log('Updates found.');
+    logger.log(`Found ${deals.length} new deals.`);
     sendEmail(deals);
   } else {
-    logger.log('No updates found.');
+    logger.log('No new deals.');
   }
 }
 
