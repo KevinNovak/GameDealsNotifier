@@ -6,9 +6,7 @@ const timeService = require('./services/time-service');
 const logger = require('./services/log-service');
 const config = require('./config.json');
 
-const dealsParameters = `sortBy=Recent&onSale=1&steamRating=${
-  config.deals.steamRating
-}`;
+const dealsParameters = `sortBy=Recent&onSale=1`;
 
 const siteUrl = `${config.site.url}/${
   config.site.routes.browse

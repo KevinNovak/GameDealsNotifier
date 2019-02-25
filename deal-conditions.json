@@ -1,0 +1,12 @@
+[
+  {
+    "steamRating": 90,
+    "reviewsCount": 300,
+    "percentOff": 60
+  },
+  {
+    "steamRating": 0,
+    "reviewsCount": 0,
+    "percentOff": 100
+  }
+]

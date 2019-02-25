@@ -22,10 +22,5 @@
       "deals": "deals",
       "stores": "stores"
     }
-  },
-  "deals": {
-    "steamRating": 90,
-    "reviewsCount": 300,
-    "percentOff": 60
   }
 }

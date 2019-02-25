@@ -1,4 +1,5 @@
 const timeService = require('./time-service');
+const dealConditions = require('../deal-conditions.json');
 const config = require('../config.json');
 
 var lastCheck = timeService.secondsSinceEpoch();
@@ -11,17 +12,26 @@ function isNewDeal(deal) {
   return deal.lastChange > lastCheck;
 }
 
-function isGoodDeal(deal) {
-  if (deal.steamRatingPercent < config.deals.steamRating) {
+function matchesDealCondition(deal, dealCondition) {
+  if (deal.steamRatingPercent < dealCondition.steamRating) {
     return false;
   }
-  if (deal.steamRatingCount < config.deals.reviewsCount) {
+  if (deal.steamRatingCount < dealCondition.reviewsCount) {
     return false;
   }
-  if (getPercentOff(deal) < config.deals.percentOff) {
+  if (getPercentOff(deal) < dealCondition.percentOff) {
     return false;
   }
   return true;
+}
+
+function isGoodDeal(deal) {
+  for (var dealCondition of dealConditions) {
+    if (matchesDealCondition(deal, dealCondition)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function getPercentOff(deal) {
