@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const logger = require('./log-service');
 const config = require('../config.json');
 
 const transporter = nodemailer.createTransport({
@@ -17,11 +18,13 @@ function sendEmail(message) {
     html: message
   };
 
+  logger.log('Sending notifications...');
   transporter.sendMail(mailOptions, function(error, info) {
     if (error) {
-      console.log(error);
+      logger.log('Notifications not sent.');
+      logger.error(error);
     } else {
-      console.log(info);
+      logger.log('Notifications sent.');
     }
   });
 }

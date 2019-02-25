@@ -1,6 +1,9 @@
+const schedule = require('node-schedule');
 const axios = require('axios');
 const dealsService = require('./services/deals-service');
 const mailerService = require('./services/mailer-service');
+const timeService = require('./services/time-service');
+const logger = require('./services/log-service');
 const config = require('./config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1&steamRating=${
@@ -17,15 +20,21 @@ const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
 var stores = [];
 
+var job = schedule.scheduleJob(config.schedule, checkForUpdates);
+
 async function checkForUpdates() {
+  logger.log('Checking for updates...');
   axios
     .get(storesUrl)
     .then(response => {
       stores = response.data;
-      axios.get(dealsUrl).then(response => processDealsResponse(response));
+      axios.get(dealsUrl).then(response => {
+        processDealsResponse(response);
+        logNextRun();
+      });
     })
     .catch(error => {
-      console.log(error);
+      logger.error(error);
     });
 }
 
@@ -33,7 +42,10 @@ function processDealsResponse(response) {
   var deals = dealsService.filterDeals(response.data);
   dealsService.updateLastCheck();
   if (deals.length > 0) {
+    logger.log('Updates found.');
     sendEmail(deals);
+  } else {
+    logger.log('No updates found.');
   }
 }
 
@@ -66,4 +78,11 @@ function getStoreById(id) {
   return stores.find(store => store.storeID == id).storeName;
 }
 
-checkForUpdates();
+function logNextRun() {
+  var nextInvocation = new Date(job.nextInvocation());
+  var nextRun = timeService.format(nextInvocation);
+  logger.log(`Next run scheduled for "${nextRun}".`);
+}
+
+logger.log('App started.');
+logNextRun();
