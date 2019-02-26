@@ -61,10 +61,16 @@ function buildMessage(deals) {
     var percentOff = dealsService.getPercentOff(deal);
     var store = getStoreById(deal.storeID);
     var steamUrl = `https://store.steampowered.com/app/${deal.steamAppID}/`;
+    var dealUrl = `http://www.cheapshark.com/redirect?dealID=${deal.dealID}`;
 
-    message += `<li><a href="${steamUrl}">[${store}] ${deal.title} ($${
+    message += `<li>[${store}] ${deal.title} ($${
       deal.salePrice
-    } / ${percentOff}% off)</a></li>`;
+    } / ${percentOff}% off)
+      <ul>
+        <li><a href="${steamUrl}">Steam Link</a></li>
+        <li><a href="${dealUrl}">Deal Link</a></li>
+      </ul>
+    </li>`;
   }
 
   message += '</ul>';
