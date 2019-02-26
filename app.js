@@ -8,8 +8,6 @@ const config = require('./config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1`;
 
-const maxPages = 20;
-
 const siteUrl = `${config.site.url}/${
   config.site.routes.browse
 }?${dealsParameters}`;
@@ -36,7 +34,7 @@ function allNew(deals) {
 
 async function getNewDeals() {
   var deals = [];
-  for (i = 0; i < maxPages; i++) {
+  for (i = 0; i < config.api.maxDealsPages; i++) {
     var dealsPage = (await getDealsPage(i)).data;
     if (allNew(dealsPage)) {
       deals.push(...dealsPage);
