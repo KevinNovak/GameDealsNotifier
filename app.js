@@ -17,10 +17,29 @@ const dealsUrl = `${config.api.url}/${
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
 var stores = [];
-var job = schedule.scheduleJob(config.schedule, checkForUpdates);
+var job = schedule.scheduleJob(config.schedule, () => {
+  checkForUpdates();
+  logNextRun();
+});
 
-function getDealsPage(page) {
-  return axios.get(`${dealsUrl}&pageNumber=${page}`);
+async function getDealsByPage(page) {
+  try {
+    var response = await axios.get(`${dealsUrl}&pageNumber=${page}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Could not retrieve deals page ${page}.`);
+    console.error(error);
+  }
+}
+
+async function getStores() {
+  try {
+    var response = await axios.get(storesUrl);
+    return response.data;
+  } catch (error) {
+    console.error('Could not retrieve stores.');
+    console.error(error);
+  }
 }
 
 function allNew(deals) {
@@ -33,34 +52,28 @@ function allNew(deals) {
 }
 
 async function getNewDeals() {
-  var deals = [];
+  var newDeals = [];
   for (i = 0; i < config.api.maxDealsPages; i++) {
-    var dealsPage = (await getDealsPage(i)).data;
+    var dealsPage = await getDealsByPage(i);
     if (allNew(dealsPage)) {
-      deals.push(...dealsPage);
+      newDeals.push(...dealsPage);
     } else {
-      deals.push(...dealsPage.filter(dealsService.isNewDeal));
+      newDeals.push(...dealsPage.filter(dealsService.isNewDeal));
       break;
     }
   }
   dealsService.updateLastCheck();
-  return deals;
+  return newDeals;
 }
 
 async function checkForUpdates() {
   logger.log('Checking for new deals...');
-  stores = (await axios.get(storesUrl)).data;
-  var deals = await getNewDeals();
-  processDeals(deals);
-  logNextRun();
-}
-
-function processDeals(deals) {
-  var deals = deals.filter(dealsService.isGoodDeal);
-  dealsService.updateLastCheck();
-  if (deals.length > 0) {
-    logger.log(`Found ${deals.length} new deals.`);
-    sendEmail(deals);
+  stores = await getStores();
+  var newDeals = await getNewDeals();
+  var goodDeals = newDeals.filter(dealsService.isGoodDeal);
+  if (goodDeals.length > 0) {
+    logger.log(`Found ${goodDeals.length} new deals.`);
+    sendEmail(goodDeals);
   } else {
     logger.log('No new deals.');
   }
