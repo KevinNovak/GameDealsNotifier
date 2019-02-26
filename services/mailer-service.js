@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-function sendEmail(message) {
+async function sendEmail(message) {
   const mailOptions = {
     from: `"${config.email.sender.name}" <${config.email.sender.email}>`,
     to: config.email.receivers,
@@ -19,14 +19,13 @@ function sendEmail(message) {
   };
 
   logger.log('Sending notifications...');
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      logger.log('Notifications not sent.');
-      logger.error(error);
-    } else {
-      logger.log('Notifications sent.');
-    }
-  });
+  try {
+    await transporter.sendMail(mailOptions);
+    logger.log('Notifications sent.');
+  } catch (error) {
+    logger.log('Notifications not sent.');
+    logger.error(error);
+  }
 }
 
 module.exports = {

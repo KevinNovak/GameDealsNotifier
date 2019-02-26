@@ -17,8 +17,8 @@ const dealsUrl = `${config.api.url}/${
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
 var stores = [];
-var job = schedule.scheduleJob(config.schedule, () => {
-  checkForUpdates();
+var job = schedule.scheduleJob(config.schedule, async () => {
+  await checkForUpdates();
   logNextRun();
 });
 
@@ -73,15 +73,15 @@ async function checkForUpdates() {
   var goodDeals = newDeals.filter(dealsService.isGoodDeal);
   if (goodDeals.length > 0) {
     logger.log(`Found ${goodDeals.length} new deals.`);
-    sendEmail(goodDeals);
+    await sendEmail(goodDeals);
   } else {
     logger.log('No new deals.');
   }
 }
 
-function sendEmail(deals) {
+async function sendEmail(deals) {
   var message = buildMessage(deals);
-  mailerService.sendEmail(message);
+  await mailerService.sendEmail(message);
 }
 
 function buildMessage(deals) {
