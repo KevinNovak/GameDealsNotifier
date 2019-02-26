@@ -8,6 +8,8 @@ const config = require('./config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1`;
 
+const maxPages = 20;
+
 const siteUrl = `${config.site.url}/${
   config.site.routes.browse
 }?${dealsParameters}`;
@@ -17,27 +19,46 @@ const dealsUrl = `${config.api.url}/${
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
 var stores = [];
-
 var job = schedule.scheduleJob(config.schedule, checkForUpdates);
+
+function getDealsPage(page) {
+  return axios.get(`${dealsUrl}&pageNumber=${page}`);
+}
+
+function allNew(deals) {
+  for (var deal of deals) {
+    if (!dealsService.isNewDeal(deal)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+async function getNewDeals() {
+  var deals = [];
+  for (i = 0; i < maxPages; i++) {
+    var dealsPage = (await getDealsPage(i)).data;
+    if (allNew(dealsPage)) {
+      deals.push(...dealsPage);
+    } else {
+      deals.push(...dealsPage.filter(dealsService.isNewDeal));
+      break;
+    }
+  }
+  dealsService.updateLastCheck();
+  return deals;
+}
 
 async function checkForUpdates() {
   logger.log('Checking for new deals...');
-  axios
-    .get(storesUrl)
-    .then(response => {
-      stores = response.data;
-      axios.get(dealsUrl).then(response => {
-        processDealsResponse(response);
-        logNextRun();
-      });
-    })
-    .catch(error => {
-      logger.error(error);
-    });
+  stores = (await axios.get(storesUrl)).data;
+  var deals = await getNewDeals();
+  processDeals(deals);
+  logNextRun();
 }
 
-function processDealsResponse(response) {
-  var deals = dealsService.filterDeals(response.data);
+function processDeals(deals) {
+  var deals = deals.filter(dealsService.isGoodDeal);
   dealsService.updateLastCheck();
   if (deals.length > 0) {
     logger.log(`Found ${deals.length} new deals.`);
@@ -55,7 +76,7 @@ function sendEmail(deals) {
 function buildMessage(deals) {
   var message = `<h2><a href="${siteUrl}">New Game Deals</a></h2>`;
 
-  message += '<ul>';
+  message += '<ol>';
 
   for (var deal of deals) {
     var percentOff = dealsService.getPercentOff(deal);
@@ -73,7 +94,7 @@ function buildMessage(deals) {
     </li>`;
   }
 
-  message += '</ul>';
+  message += '</ol>';
 
   return message;
 }

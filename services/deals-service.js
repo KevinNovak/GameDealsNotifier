@@ -1,12 +1,7 @@
 const timeService = require('./time-service');
 const dealConditions = require('../deal-conditions.json');
-const config = require('../config.json');
 
 var lastCheck = timeService.secondsSinceEpoch();
-
-function filterDeals(deals) {
-  return deals.filter(isNewDeal).filter(isGoodDeal);
-}
 
 function isNewDeal(deal) {
   return deal.lastChange > lastCheck;
@@ -45,7 +40,8 @@ function updateLastCheck() {
 }
 
 module.exports = {
-  filterDeals,
+  isNewDeal,
+  isGoodDeal,
   getPercentOff,
   updateLastCheck
 };
