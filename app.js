@@ -17,6 +17,8 @@ const dealsUrl = `${config.api.url}/${
 const storesUrl = `${config.api.url}/${config.api.routes.stores}`;
 
 var stores = [];
+var lastSeenDeal = '';
+
 var job = schedule.scheduleJob(config.schedule, async () => {
   await checkForUpdates();
   logNextRun();
@@ -42,27 +44,43 @@ async function getStores() {
   }
 }
 
-function allNew(deals) {
-  for (var deal of deals) {
-    if (!dealsService.isNewDeal(deal)) {
-      return false;
-    }
+function compareDeals(a, b) {
+  if (a.lastChange < b.lastChange) {
+    return 1;
   }
-  return true;
+  if (a.lastChange > b.lastChange) {
+    return -1;
+  }
+  if (a.title > b.title) {
+    return 1;
+  }
+  if (a.title < b.title) {
+    return -1;
+  }
+  return 0;
 }
 
 async function getNewDeals() {
-  var newDeals = [];
+  var deals = [];
+
   for (i = 0; i < config.api.maxDealsPages; i++) {
     var dealsPage = await getDealsByPage(i);
-    if (allNew(dealsPage)) {
-      newDeals.push(...dealsPage);
-    } else {
-      newDeals.push(...dealsPage.filter(dealsService.isNewDeal));
+    deals.push(...dealsPage);
+    if (deals.some(deal => deal.dealID == lastSeenDeal)) {
       break;
     }
   }
-  dealsService.updateLastCheck();
+
+  deals.sort(compareDeals);
+
+  var lastSeenDealIndex = deals.findIndex(deal => deal.dealID == lastSeenDeal);
+  var newDeals =
+    lastSeenDealIndex == -1 ? deals : deals.slice(0, lastSeenDealIndex);
+
+  if (deals.length > 0) {
+    lastSeenDeal = deals[0].dealID;
+  }
+
   return newDeals;
 }
 

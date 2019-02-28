@@ -1,11 +1,4 @@
-const timeService = require('./time-service');
 const dealConditions = require('../deal-conditions.json');
-
-var lastCheck = timeService.secondsSinceEpoch();
-
-function isNewDeal(deal) {
-  return deal.lastChange > lastCheck;
-}
 
 function matchesDealCondition(deal, dealCondition) {
   if (deal.steamRatingPercent < dealCondition.steamRating) {
@@ -35,13 +28,7 @@ function getPercentOff(deal) {
   );
 }
 
-function updateLastCheck() {
-  lastCheck = timeService.secondsSinceEpoch();
-}
-
 module.exports = {
-  isNewDeal,
   isGoodDeal,
-  getPercentOff,
-  updateLastCheck
+  getPercentOff
 };
