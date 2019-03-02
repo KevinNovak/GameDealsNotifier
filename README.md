@@ -1,6 +1,6 @@
 # Game Deals Notifier
 
-Be notified of quality PC game deals. Powered by [CheapShark](https://www.cheapshark.com/).
+Node.js Script - Be notified of quality PC game deals. Powered by [CheapShark](https://www.cheapshark.com/).
 
 ```console
 [2019-03-02 00:51:54] App started.
