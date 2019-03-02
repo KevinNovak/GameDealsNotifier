@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Deals</title>
+</head>
+
+<body>
+  <h2><a href="{{siteUrl}}">New Game Deals</a></h2>
+  <ol>
+    {{#each deals}}
+    <li>
+      [{{store}}] {{title}} (${{price}} / {{percentOff}}% off)
+      <ul>
+        <li><a href="{{steamUrl}}">Steam Link</a></li>
+        <li><a href="{{dealUrl}}">Deal Link</a></li>
+      </ul>
+    </li>
+    {{/each}}
+  </ol>
+</body>
+
+</html>

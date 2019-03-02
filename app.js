@@ -98,34 +98,24 @@ async function checkForUpdates() {
 }
 
 async function sendEmail(deals) {
-  var message = buildMessage(deals);
-  await mailerService.sendEmail(message);
+  var emailData = createEmailData(deals);
+  await mailerService.sendEmail(emailData);
 }
 
-function buildMessage(deals) {
-  var message = `<h2><a href="${siteUrl}">New Game Deals</a></h2>`;
+function createEmailData(deals) {
+  var dealsData = deals.map(deal => ({
+    store: getStoreById(deal.storeID),
+    title: deal.title,
+    price: deal.salePrice,
+    percentOff: dealsService.getPercentOff(deal),
+    steamUrl: `https://store.steampowered.com/app/${deal.steamAppID}/`,
+    dealUrl: `http://www.cheapshark.com/redirect?dealID=${deal.dealID}`
+  }));
 
-  message += '<ol>';
-
-  for (var deal of deals) {
-    var percentOff = dealsService.getPercentOff(deal);
-    var store = getStoreById(deal.storeID);
-    var steamUrl = `https://store.steampowered.com/app/${deal.steamAppID}/`;
-    var dealUrl = `http://www.cheapshark.com/redirect?dealID=${deal.dealID}`;
-
-    message += `<li>[${store}] ${deal.title} ($${
-      deal.salePrice
-    } / ${percentOff}% off)
-      <ul>
-        <li><a href="${steamUrl}">Steam Link</a></li>
-        <li><a href="${dealUrl}">Deal Link</a></li>
-      </ul>
-    </li>`;
-  }
-
-  message += '</ol>';
-
-  return message;
+  return {
+    deals: dealsData,
+    siteUrl
+  };
 }
 
 function getStoreById(id) {
