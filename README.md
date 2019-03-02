@@ -2,6 +2,8 @@
 
 Be notified of quality PC game deals.
 
+![Game Deals Email](https://i.imgur.com/T51P9i6.jpg)
+
 ```console 
 [2019-03-02 00:51:54] App started.
 [2019-03-02 00:51:54] Next run scheduled for "2019-03-02 00:54:00".
