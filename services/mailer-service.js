@@ -33,7 +33,7 @@ async function sendEmail(emailData) {
     await transporter.sendMail(mailOptions);
     logger.log('Notifications sent.');
   } catch (error) {
-    logger.log('Notifications not sent.');
+    logger.error('Notifications not sent.');
     logger.error(error);
   }
 }
