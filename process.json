@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "gamedealsnotifier",
+      "script": "app.js"
+    }
+  ]
+}

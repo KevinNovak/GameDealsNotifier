@@ -4,7 +4,7 @@
   "description": "Be notified of quality PC game deals.",
   "main": "app.js",
   "scripts": {
-    "start": "pm2 start app.js --name gamedealsnotifier",
+    "start": "pm2 start process.json",
     "dev": "node app.js"
   },
   "keywords": [
