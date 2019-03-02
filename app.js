@@ -6,10 +6,6 @@ const timeService = require('./services/time-service');
 const logger = require('./services/log-service');
 const config = require('./config/config.json');
 
-const siteUrl = `${config.site.url}/${
-  config.site.routes.browse
-}?sortBy=Recent&onSale=1`;
-
 var stores = [];
 
 var job = schedule.scheduleJob(config.schedule, async () => {
@@ -45,8 +41,7 @@ function createEmailData(deals) {
   }));
 
   return {
-    deals: dealsData,
-    siteUrl
+    deals: dealsData
   };
 }
 

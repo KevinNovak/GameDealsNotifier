@@ -10,12 +10,6 @@
     "receivers": "{RECEIVER_EMAILS}",
     "subject": "New Game Deals"
   },
-  "site": {
-    "url": "https://www.cheapshark.com",
-    "routes": {
-      "browse": "browse"
-    }
-  },
   "api": {
     "url": "https://www.cheapshark.com/api/1.0",
     "maxDealsPages": 20,
