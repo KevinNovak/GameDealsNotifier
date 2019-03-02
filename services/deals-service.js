@@ -1,4 +1,4 @@
-const dealConditions = require('../deal-conditions.json');
+const dealConditions = require('../config/deal-conditions.json');
 
 function matchesDealCondition(deal, dealCondition) {
   if (deal.steamRatingPercent < dealCondition.steamRating) {

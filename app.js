@@ -4,7 +4,7 @@ const dealsService = require('./services/deals-service');
 const mailerService = require('./services/mailer-service');
 const timeService = require('./services/time-service');
 const logger = require('./services/log-service');
-const config = require('./config.json');
+const config = require('./config/config.json');
 
 const dealsParameters = `sortBy=Recent&onSale=1`;
 

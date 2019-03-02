@@ -3,10 +3,10 @@ const handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const logger = require('./log-service');
-const config = require('../config.json');
+const config = require('../config/config.json');
 
 const emailHbs = fs
-  .readFileSync(path.resolve(__dirname, '../email.hbs'))
+  .readFileSync(path.resolve(__dirname, '../config/email.hbs'))
   .toString();
 const emailTemplate = handlebars.compile(emailHbs);
 
