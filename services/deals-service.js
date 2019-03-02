@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require('./log-service');
 const config = require('../config/config.json');
 const dealConditions = require('../config/deal-conditions.json');
 
@@ -42,8 +43,8 @@ async function getDealsByPage(page) {
     var response = await axios.get(`${dealsUrl}&pageNumber=${page}`);
     return response.data;
   } catch (error) {
-    console.error(`Could not retrieve deals page ${page}.`);
-    console.error(error);
+    logger.error(`Could not retrieve deals page ${page}.`);
+    logger.error(error);
   }
 }
 
