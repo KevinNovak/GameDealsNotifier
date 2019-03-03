@@ -7,7 +7,8 @@ const dealsUrl = `${config.api.url}/${
   config.api.routes.deals
 }?sortBy=Recent&onSale=1`;
 
-var lastSeenDeal = '';
+var lastKnownDealId = '';
+var lastKnownChangeTime = 0;
 
 async function getNewGoodDeals() {
   var newDeals = await getNewDeals();
@@ -20,22 +21,29 @@ async function getNewDeals() {
   for (i = 0; i < config.api.maxDealsPages; i++) {
     var dealsPage = await getDealsByPage(i);
     deals.push(...dealsPage);
-    if (deals.some(deal => deal.dealID == lastSeenDeal)) {
+    if (dealsPage.some(isOldDeal)) {
       break;
     }
   }
 
   deals.sort(compareDeals);
 
-  var lastSeenDealIndex = deals.findIndex(deal => deal.dealID == lastSeenDeal);
-  var newDeals =
-    lastSeenDealIndex == -1 ? deals : deals.slice(0, lastSeenDealIndex);
+  var oldDealIndex = deals.findIndex(isOldDeal);
+  var newDeals = oldDealIndex == -1 ? deals : deals.slice(0, oldDealIndex);
 
-  if (deals.length > 0) {
-    lastSeenDeal = deals[0].dealID;
+  if (newDeals.length > 0) {
+    var firstDeal = newDeals[0];
+    lastKnownDealId = firstDeal.dealID;
+    lastKnownChangeTime = firstDeal.lastChange;
   }
 
   return newDeals;
+}
+
+function isOldDeal(deal) {
+  return (
+    deal.dealID == lastKnownDealId || deal.lastChange <= lastKnownChangeTime
+  );
 }
 
 async function getDealsByPage(page) {
