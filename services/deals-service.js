@@ -81,16 +81,50 @@ function isGoodDeal(deal) {
   return false;
 }
 
-function matchesDealCondition(deal, dealCondition) {
-  if (deal.steamRatingPercent < dealCondition.steamRating) {
-    return false;
+function matchesDealCondition(deal, condition) {
+  // Steam rating
+  if (condition.steamRating) {
+    if (condition.steamRating.min) {
+      if (deal.steamRatingPercent < condition.steamRating.min) {
+        return false;
+      }
+    }
+    if (condition.steamRating.max) {
+      if (deal.steamRatingPercent > condition.steamRating.max) {
+        return false;
+      }
+    }
   }
-  if (deal.steamRatingCount < dealCondition.reviewsCount) {
-    return false;
+
+  // Number of reviews
+  if (condition.reviewsCount) {
+    if (condition.reviewsCount.min) {
+      if (deal.steamRatingCount < condition.reviewsCount.min) {
+        return false;
+      }
+    }
+    if (condition.reviewsCount.max) {
+      if (deal.steamRatingCount > condition.reviewsCount.max) {
+        return false;
+      }
+    }
   }
-  if (getPercentOff(deal) < dealCondition.percentOff) {
-    return false;
+
+  // Percent off
+  if (condition.percentOff) {
+    var percentOff = getPercentOff(deal);
+    if (condition.percentOff.min) {
+      if (percentOff < condition.percentOff.min) {
+        return false;
+      }
+    }
+    if (condition.percentOff.max) {
+      if (percentOff > condition.percentOff.max) {
+        return false;
+      }
+    }
   }
+
   return true;
 }
 
