@@ -36,6 +36,7 @@ function createEmailData(deals) {
     title: deal.title,
     price: deal.salePrice,
     percentOff: dealsService.getPercentOff(deal),
+    time: timeService.unixToRelative(deal.lastChange),
     steamUrl: `https://store.steampowered.com/app/${deal.steamAppID}/`,
     dealUrl: `http://www.cheapshark.com/redirect?dealID=${deal.dealID}`
   }));
